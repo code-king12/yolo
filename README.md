@@ -1,7 +1,10 @@
 
 
 ### 一、作品概述
-
+![image](https://github.com/code-king12/yolo/blob/main/%E5%9B%BE%E7%89%876.png)
+![image](https://github.com/code-king12/yolo/blob/main/%E5%9B%BE%E7%89%875.png)
+![image](https://github.com/code-king12/yolo/blob/main/%E5%9B%BE%E7%89%873.png)
+![image](https://github.com/code-king12/yolo/blob/main/%E5%9B%BE%E7%89%874.png)
 #### 1、创作背景
 
 图像识别技术在近几年有了长足的发展，如opencv，机器学习平台tensorflow、pytorch等日趋强大和完善。大家对人脸识别更是记忆深刻吧，机场，海关，支付都可以刷脸了。在这种背景下，扑克牌的图像自动识别应用似乎是小儿科的事情了。因为游戏桌台都在室内，光线充足，背景单纯，有利于图像识别算法的实施。但很高的识别准确率也并非易事，本文利用目前比较主流的yolov5目标检测算法对扑克进行识别，本文是利用在pc端训练好的权重然后对模型转换，最后部署到安卓手机上的。
@@ -68,6 +71,7 @@
 图像识别：进入主界面后点击选择图片申请系统访问图库权限选择图片，通过加载已经训练好的并且简化转换的param模型，调用yolov5的detect函数对图片进行识别，最后通过showObjects函数对图片标注，查看功能是通过result函数展示的，主要是对objects的label判断，然后分别将识别到的每一种扑克类别加入到bundle里面，再分别用intent的putExtra传递参数到另一个activity，然后分别用getBundleExtra和getString取出每种扑克类别的数量，最后展示出来。清空统计数据，就是把之前累加的数据置零，但会保留当前识别的数据。识别的主要原理就是利用自己修改过的yolov5模型对利用手机拍摄的三百多张扑克数据集标注然后利用租来的服务器进行训练两百多轮，然后将生成的pt权重文件转化为onnx模型，然后再对模型进行简化，得到简化后的onnx模型，再转化为ncnn便于移动端运行的框架，最后利用腾讯的开源框架ncnn方便部署到安卓上，再对代码进行修改。
 
 ![image](https://github.com/code-king12/yolo/blob/main/%E5%9B%BE%E7%89%877.png)
+![image](https://github.com/code-king12/yolo/blob/main/%E5%9B%BE%E7%89%878.png)
 
 
 #### 3、数据库设计
