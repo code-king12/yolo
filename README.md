@@ -1,4 +1,4 @@
- ```markdown
+
 
 ### 一、作品概述
 
@@ -108,10 +108,437 @@ public class YoloV5Ncnn {
 }
 
 // 上面函数为图像识别提供了yolov5检测接口并且获取坐标和识别种类以及置信度,以及加载已经模型转换的权重文件，是本app的非常关键的代码
+
+buttonImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                Intent i = new Intent(Intent.ACTION_PICK);
+                i.setType("image/*");
+                startActivityForResult(i, SELECT_IMAGE);
+            }
+        });
+//点击事件实现了从图库里面获取要识别的图片
+
+Button buttonDetect = (Button) findViewById(R.id.buttonDetect);
+        buttonDetect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                if (yourSelectedImage == null){
+                    Toast.makeText(MainActivity.this, "请在相册里选择图片", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+
+                YoloV5Ncnn.Obj[] objects = yolov5ncnn.Detect(yourSelectedImage, false);
+
+                showObjects(objects);
+
+            }
+        });
+//点击事件实现了对图片进行识别以及把目标对象框出来并显示目标名称，这是用cpu的，用GPU原理也一样。
+
+private void showObjects(YoloV5Ncnn.Obj[] objects)
+    {
+        if (objects == null)
+        {
+            imageView.setImageBitmap(bitmap);
+            return;
+        }
+
+        // draw objects on bitmap
+        Bitmap rgba = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+
+        final int[] colors = new int[] {
+            Color.rgb( 54,  67, 244),
+            Color.rgb( 99,  30, 233),
+            Color.rgb(176,  39, 156),
+            Color.rgb(183,  58, 103),
+            Color.rgb(181,  81,  63),
+            Color.rgb(243, 150,  33),
+            Color.rgb(244, 169,   3),
+            Color.rgb(212, 188,   0),
+            Color.rgb(136, 150,   0),
+            Color.rgb( 80, 175,  76),
+            Color.rgb( 74, 195, 139),
+            Color.rgb( 57, 220, 205),
+            Color.rgb( 59, 235, 255),
+            Color.rgb(  7, 193, 255),
+            Color.rgb(  0, 152, 255),
+            Color.rgb( 34,  87, 255),
+            Color.rgb( 72,  85, 121),
+            Color.rgb(158, 158, 158),
+            Color.rgb(139, 125,  96)
+        };
+
+        Canvas canvas = new Canvas(rgba);
+
+        Paint paint = new Paint();
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(4);
+
+        Paint textbgpaint = new Paint();
+        textbgpaint.setColor(Color.WHITE);
+        textbgpaint.setStyle(Paint.Style.FILL);
+
+        Paint textpaint = new Paint();
+        textpaint.setColor(Color.BLACK);
+        textpaint.setTextSize(26);
+        textpaint.setTextAlign(Paint.Align.LEFT);
+
+        for (int i = 0; i < objects.length; i++)
+        {
+            paint.setColor(colors[i % 19]);
+
+            canvas.drawRect(objects[i].x, objects[i].y, objects[i].x + objects[i].w, objects[i].y + objects[i].h, paint);
+
+            // draw filled text inside image
+            {
+                String text = objects[i].label + " = " + String.format("%.1f", objects[i].prob * 100) + "%";
+
+
+//                System.out.println(objects[i].label);
+
+
+                float text_width = textpaint.measureText(text);
+                float text_height = - textpaint.ascent() + textpaint.descent();
+
+                float x = objects[i].x;
+                float y = objects[i].y - text_height;
+                if (y < 0)
+                    y = 0;
+                if (x + text_width > rgba.getWidth())
+                    x = rgba.getWidth() - text_width;
+
+                canvas.drawRect(x, y, x + text_width, y + text_height, textbgpaint);
+
+                canvas.drawText(text, x, y - textpaint.ascent(), textpaint);
+            }
+        }
+
+        imageView.setImageBitmap(rgba);
+
+}
+//获取目标并把目标通过绘画工具绘画出来
+public void result(View v){
+        Intent intent = new Intent(MainActivity.this,second.class);
+        YoloV5Ncnn.Obj[] objects = yolov5ncnn.Detect(yourSelectedImage, false);
+        Bundle bundle = new Bundle();
+        if (yourSelectedImage == null){
+            Toast.makeText(MainActivity.this, "请在相册里选择图片", Toast.LENGTH_LONG).show();
+            return;
+        }else {
+            sum = sum + objects.length;
+            bundle.putString("sum", String.valueOf(sum));
+            intent.putExtra("object",bundle);
+            System.out.println(objects.length);
+            for (int i = 0; i < objects.length; i++){
+                if (Objects.equals(objects[i].label, "three")){
+                    three++;
+                    bundle.putString("three", String.valueOf(three));
+                    intent.putExtra("object",bundle);
+                    System.out.println(objects[i].label);
+                }
+                if (Objects.equals(objects[i].label, "four")){
+                    four++;
+                    bundle.putString("four", String.valueOf(four));
+                    intent.putExtra("object",bundle);
+                    System.out.println(objects[i].label);
+                }
+                if (Objects.equals(objects[i].label, "five")){
+                    five++;
+                    bundle.putString("five", String.valueOf(five));
+                    intent.putExtra("object",bundle);
+                    System.out.println(objects[i].label);
+                }
+                if (Objects.equals(objects[i].label, "six")){
+                    six++;
+                    bundle.putString("six", String.valueOf(six));
+                    intent.putExtra("object",bundle);
+                    System.out.println(objects[i].label);
+                }
+                if (Objects.equals(objects[i].label, "seven")){
+                    seven++;
+                    bundle.putString("seven", String.valueOf(seven));
+                    intent.putExtra("object",bundle);
+                    System.out.println(objects[i].label);
+                }
+                if (Objects.equals(objects[i].label, "eight")){
+                    eight++;
+                    bundle.putString("eight", String.valueOf(eight));
+                    intent.putExtra("object",bundle);
+                    System.out.println(objects[i].label);
+                }
+                if (Objects.equals(objects[i].label, "nine")){
+                    nine++;
+                    bundle.putString("nine", String.valueOf(nine));
+                    intent.putExtra("object",bundle);
+                    System.out.println(objects[i].label);
+                }
+                if (Objects.equals(objects[i].label, "ten")){
+                    ten++;
+                    bundle.putString("ten", String.valueOf(ten));
+                    intent.putExtra("object",bundle);
+                    System.out.println(objects[i].label);
+                }
+                if (Objects.equals(objects[i].label, "jack")){
+                    jack++;
+                    bundle.putString("jack", String.valueOf(jack));
+                    intent.putExtra("object",bundle);
+                    System.out.println(objects[i].label);
+                }
+                if (Objects.equals(objects[i].label, "queen")){
+                    queen++;
+                    bundle.putString("queen", String.valueOf(queen));
+                    intent.putExtra("object",bundle);
+                    System.out.println(objects[i].label);
+                }
+                if (Objects.equals(objects[i].label, "king")){
+                    king++;
+                    bundle.putString("king", String.valueOf(king));
+                    intent.putExtra("object",bundle);
+                    System.out.println(objects[i].label);
+                }
+                if (Objects.equals(objects[i].label, "ace")){
+                    ace++;
+                    bundle.putString("ace", String.valueOf(ace));
+                    intent.putExtra("object",bundle);
+                    System.out.println(objects[i].label);
+                }
+                if (Objects.equals(objects[i].label, "two")){
+                    two++;
+                    bundle.putString("two", String.valueOf(two));
+                    intent.putExtra("object",bundle);
+                    System.out.println(objects[i].label);
+                }
+
+
+            }
+        }
+
+
+
+        startActivity(intent);
+    }
+//对识别到的目标的数量进行统计计数，并把统计数量展示出来
+
+public void clear(View v){
+         sum = 0;
+         ten = 0;
+         eight = 0;
+         three = 0;
+         ace = 0;
+         two = 0;
+         jack = 0;
+         nine = 0;
+         queen = 0;
+         seven = 0;
+         five = 0;
+         six = 0;
+         four = 0;
+         king = 0;
+    }
+//简单的清零操作
+package com.tencent.yolov5ncnn;
+
+import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+
+public class Myhelper extends SQLiteOpenHelper {
+    public Myhelper(Context context){
+        super(context,"People.db",null,2);
+    }
+
+    public void onCreate(SQLiteDatabase db){
+        String sql="create Table user(id integer primary key autoincrement,username varchar(20),password varchar(20),sex varchar(2))";
+        db.execSQL(sql);
+    }
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+
+    }
+}
+//连接数据库的操作实现创建数据库和建表功能
+register.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                String name=username.getText().toString().trim();
+                String pass=password.getText().toString().trim();
+
+                String sexstr=((RadioButton)Register.this.findViewById(sex.getCheckedRadioButtonId())).getText().toString();
+                Log.i("TAG",name+"_"+pass+"_"+sexstr);
+                UserServer uService=new UserServer(Register.this);
+                User user=new User();
+                user.setUsername(name);
+                user.setPassword(pass);
+
+                user.setSex(sexstr);
+                uService.register(user);
+                Toast.makeText(Register.this, "注册成功", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(Register.this,Login.class);
+                startActivity(intent);
+            }
+        });
+
+
+//注册的点击事件，通过uService.register(user);把user对象传入到uservice的register函数里面，如何获取用户名和密码，通过sql语句，实现对数据库进行插入操作。
+login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String name=username.getText().toString();
+                System.out.println(name);
+                String pass=password.getText().toString();
+                System.out.println(pass);
+
+                Log.i("TAG",name+"_"+pass);
+                UserServer uService=new UserServer(Login.this);
+                boolean flag=uService.login(name, pass);
+
+                if(flag){
+                    Log.i("TAG","登录成功");
+                    Toast.makeText(Login.this, "登录成功", Toast.LENGTH_LONG).show();
+//                    Intent intent = new Intent(Login.this, Register.class);
+//                    startActivity(intent);
+                    Intent intent = new Intent(Login.this,MainActivity.class);
+                    startActivity(intent);
+                }else{
+                    Log.i("TAG","登录失败");
+                    Toast.makeText(Login.this, "登录失败", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+//同理，利用uService.login(name, pass);将用户名和密码传入到uservice的login中，执行sql查询语句，如果能够查询到则返回ture否则返回false，然后执行相关的代码。
+public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.second);
+
+
+        tv0 = (TextView) findViewById(R.id.tv0);
+        tv1 = (TextView) findViewById(R.id.tv1);
+        tv2 = (TextView) findViewById(R.id.tv2);
+        tv3 = (TextView) findViewById(R.id.tv3);
+        tv4 = (TextView) findViewById(R.id.tv4);
+        tv5 = (TextView) findViewById(R.id.tv5);
+        tv6 = (TextView) findViewById(R.id.tv6);
+        tv7 = (TextView) findViewById(R.id.tv7);
+        tv8 = (TextView) findViewById(R.id.tv8);
+        tv9 = (TextView) findViewById(R.id.tv9);
+        tv10 = (TextView) findViewById(R.id.tv10);
+        tv11 = (TextView) findViewById(R.id.tv11);
+        tv12 = (TextView) findViewById(R.id.tv12);
+        tv13 = (TextView) findViewById(R.id.tv13);
+
+        Intent intent = getIntent();
+        Bundle puke = intent.getBundleExtra("object");
+        tv0.setText(puke.getString("sum"));
+        tv1.setText(puke.getString("ace"));
+        tv2.setText(puke.getString("two"));
+        tv3.setText(puke.getString("three"));
+        tv4.setText(puke.getString("four"));
+        tv5.setText(puke.getString("five"));
+        tv6.setText(puke.getString("six"));
+        tv7.setText(puke.getString("seven"));
+        tv8.setText(puke.getString("eight"));
+        tv9.setText(puke.getString("nine"));
+        tv10.setText(puke.getString("ten"));
+        tv11.setText(puke.getString("jack"));
+        tv12.setText(puke.getString("queen"));
+        tv13.setText(puke.getString("king"));
+}
+//获取对应textview的id然后利用意图对另一个activity传来的数据放进到对应的textview。
+
+public class User implements Serializable{
+    private int id;
+    private String username;
+    private String password;
+
+    private String sex;
+    public User() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+    public User(String username, String password, String sex) {
+        super();
+        this.username = username;
+        this.password = password;
+
+        this.sex = sex;
+    }
+    public int getId() {
+        return id;
+    }
+    public void setId(int id) {
+        this.id = id;
+    }
+    public String getUsername() {
+        return username;
+    }
+    public void setUsername(String username) {
+        this.username = username;
+    }
+    public String getPassword() {
+        return password;
+    }
+    public void setPassword(String password) {
+        this.password = password;
+    }
+    public String getSex() {
+        return sex;
+    }
+    public void setSex(String sex) {
+        this.sex = sex;
+    }
+    @Override
+    public String toString() {
+        return "User [id=" + id + ", username=" + username + ", password="
+                + password +  ", sex=" + sex + "]";
+    }
+
+}
+//用户的实体类，方便对用户数据进行处理。
+
+public boolean login(String username,String password){
+        SQLiteDatabase sdb=dbHelper.getReadableDatabase();
+        String sql="select * from user where username=? and password=?";
+        Cursor cursor=sdb.rawQuery(sql, new String[]{username,password});
+        if(cursor.moveToFirst()==true){
+            cursor.close();
+            return true;
+        }
+        return false;
+    }
+    public boolean register(User user){
+        SQLiteDatabase sdb=dbHelper.getReadableDatabase();
+        String sql="insert into user(username,password,sex) values(?,?,?)";
+        Object obj[]={user.getUsername(),user.getPassword(),user.getSex()};
+        sdb.execSQL(sql, obj);
+        return true;
+}
+//用户实体的操作类，分别定义了注册函数和登录函数，实现了用户信息的插入和查询功能。
 ```
 
-#### 2、功能实现的顺序图
+#### 2、作品截图
+
 
 （此处应有顺序图，但未在文本中提供）
 
-### 
+### 六、 作品设计、实现难点分析
+1、难点分析
+- 场景不鲁棒
+由于训练样本局限导致在场景变化下会错误辨别
+- 难以部署
+yolov5难以部署到Android上，网络结构不一样
+- 模型结构复杂
+yolov5模型结构过于复杂 直接部署Android上，会导致应用崩溃，需要简化
+
+- 设备限制
+训练模型时需要消耗大CPU GPU资源，本身的设备条件难以带动
+
+2、解决方案
+- 场景不鲁棒 
+通过增加图片多样性并且收集更多的数据、产生更多的数据、对数据做缩放、对数据做变换、特征选择、重新定义问题，多次训练来解决场景不鲁棒的问题。
+- 难以部署
+通过修改pc端网络结构删除slice层，使得该网络结构与Android端的网络结构相同，从而使PC端的yolov5模型成功部署到Android上。
+- 模型结构复杂   
+通过对pc端网络结构进行修改，简化训练时的网络结构，可以降低训练出来的模型部署到Android上的负载，从而解决因为网络负载过大，部署后应用崩溃的问题。
+- 设备限制
+由于我们自己的机器显卡不够好，在通过GPU训练学习模型时，消耗的时间较长，所以我们购买了云服务器，在上面训练模型可以有更高的效率。
+
