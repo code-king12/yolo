@@ -1,10 +1,10 @@
 
 
 ### 一、作品概述
-![image](https://github.com/code-king12/yolo/blob/main/%E5%9B%BE%E7%89%876.png)
-![image](https://github.com/code-king12/yolo/blob/main/%E5%9B%BE%E7%89%875.png)
-![image](https://github.com/code-king12/yolo/blob/main/%E5%9B%BE%E7%89%873.png)
-![image](https://github.com/code-king12/yolo/blob/main/%E5%9B%BE%E7%89%874.png)
+![image](https://github.com/code-king12/yolo/blob/main/%E5%9B%BE%E7%89%876.jpg)
+![image](https://github.com/code-king12/yolo/blob/main/%E5%9B%BE%E7%89%875.jpg)
+![image](https://github.com/code-king12/yolo/blob/main/%E5%9B%BE%E7%89%873.jpg)
+![image](https://github.com/code-king12/yolo/blob/main/%E5%9B%BE%E7%89%874.jpg)
 #### 1、创作背景
 
 图像识别技术在近几年有了长足的发展，如opencv，机器学习平台tensorflow、pytorch等日趋强大和完善。大家对人脸识别更是记忆深刻吧，机场，海关，支付都可以刷脸了。在这种背景下，扑克牌的图像自动识别应用似乎是小儿科的事情了。因为游戏桌台都在室内，光线充足，背景单纯，有利于图像识别算法的实施。但很高的识别准确率也并非易事，本文利用目前比较主流的yolov5目标检测算法对扑克进行识别，本文是利用在pc端训练好的权重然后对模型转换，最后部署到安卓手机上的。
